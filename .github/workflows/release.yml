@@ -32,7 +32,7 @@ jobs:
           git add dist/
           # Only commit if there are changes in dist
           git diff --quiet && git diff --staged --quiet || git commit -m "build: update dist for ${{ github.ref_name }}"
-          git push origin main
+          git push origin HEAD:main
 
       - name: Update major tag (v1, v2, etc.)
         run: |
