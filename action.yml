@@ -25,6 +25,9 @@ inputs:
     description: 'Export secrets as environment variables to GITHUB_ENV (true/false)'
     required: false
     default: 'false'
+branding:
+  icon: 'file-minus'
+  color: 'white'
 runs:
   using: 'node20'
   main: 'dist/index.js'
