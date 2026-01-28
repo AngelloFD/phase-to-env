@@ -95,3 +95,26 @@ If there are secrets in Phase you don't want to bring into the CI/CD environment
 1. Have an account and project configured in [Phase](https://phase.dev) or a self hosted instance.
 2. Generate a **Service Token** in the Phase console for your application and environment.
 3. Save `PHASE_APP_ID` and `PHASE_SERVICE_TOKEN` as secrets in your GitHub repository.
+
+## License
+
+This project is licensed under the ISC License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Development
+
+To install dependencies and build the action locally:
+
+```bash
+npm install
+npm run build
+```
