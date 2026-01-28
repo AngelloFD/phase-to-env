@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-tag:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -34,8 +36,12 @@ jobs:
           git diff --quiet && git diff --staged --quiet || git commit -m "build: update dist for ${{ github.ref_name }}"
           git push origin HEAD:main
 
-      - name: Update major tag (v1, v2, etc.)
+      - name: Update tags
         run: |
+          # Actualizar tag Major (v1)
           MAJOR_VERSION=$(echo "${{ github.ref_name }}" | cut -d. -f1)
           git tag -fa $MAJOR_VERSION -m "Update major tag $MAJOR_VERSION"
-          git push origin $MAJOR_VERSION --force
+          git push origin $MAJOR_VERSION --force          
+          # Actualizar tag específico (v1.0.0) para que apunte al commit con dist/
+          git tag -fa ${{ github.ref_name }} -m "Update tag ${{ github.ref_name }} with built dist"
+          git push origin ${{ github.ref_name }} --force
