@@ -1,6 +1,6 @@
 name: 'Phase Secrets to .env'
 author: AngelloFD
-description: 'Fetches secrets from Phase and saves them to a .env file'
+description: 'Securely fetches secrets from your Phase server and saves them to a .env file'
 inputs:
   APP_ID:
     description: 'Phase App ID'
