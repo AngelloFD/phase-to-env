@@ -1,4 +1,5 @@
 # Phase Secrets to .env Action
+![GitHub Release](https://img.shields.io/github/v/release/AngelloFD/phase-to-env?logo=file-minus&label=Latest%20release)
 
 This GitHub Action allows you to fetch secrets from [Phase](https://phase.dev) and inject them into your workflow by creating a `.env` file or exporting them as environment variables.
 
@@ -91,6 +92,6 @@ If there are secrets in Phase you don't want to bring into the CI/CD environment
 
 ## Prerequisites
 
-1. Have an account and project configured in [Phase](https://phase.dev).
+1. Have an account and project configured in [Phase](https://phase.dev) or a self hosted instance.
 2. Generate a **Service Token** in the Phase console for your application and environment.
 3. Save `PHASE_APP_ID` and `PHASE_SERVICE_TOKEN` as secrets in your GitHub repository.
