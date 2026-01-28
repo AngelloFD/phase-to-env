@@ -1,0 +1,41 @@
+name: Test Phase Action
+
+on: 
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    name: Test Phase Secrets (${{ matrix.env }})
+    strategy:
+      fail-fast: false
+      matrix:
+        env: [production, development, staging]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run Phase to Env Action for ${{ matrix.env }}
+        id: phase-action
+        uses: ./
+        with:
+          APP_ID: ${{ secrets.PHASE_APP_ID }}
+          ENV_NAME: ${{ matrix.env }}
+          SERVICE_TOKEN: ${{ secrets.PHASE_SERVICE_TOKEN }}
+          SECRET_FILE_PATH: '.env.${{ matrix.env }}'
+          EXPORT_ENV_VARS: 'true'
+          HOST: ${{ secrets.PHASE_URL }}
+
+      - name: Verify .env creation
+        run: |
+          if [ -f .env.${{ matrix.env }} ]; then
+            echo "✅ .env.${{ matrix.env }} file successfully created"
+            echo "File content preview:"
+            cat .env.${{ matrix.env }}
+          else
+            echo "❌ .env.${{ matrix.env }} file was NOT created"
+            exit 1
+          fi

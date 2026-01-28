@@ -1,0 +1,30 @@
+name: 'Phase Secrets to .env'
+author: AngelloFD
+description: 'Fetches secrets from Phase and saves them to a .env file'
+inputs:
+  APP_ID:
+    description: 'Phase App ID'
+    required: true
+  ENV_NAME:
+    description: 'Environment name (e.g., development, production)'
+    required: true
+  SERVICE_TOKEN:
+    description: 'Phase Service Token'
+    required: true
+  HOST:
+    description: 'Phase API base URL'
+    required: true
+  EXCLUDE_SECRETS:
+    description: 'Comma-separated list of secret names to exclude'
+    required: false
+  SECRET_FILE_PATH:
+    description: 'Path/Name of the output file (default: .env)'
+    required: false
+    default: '.env'
+  EXPORT_ENV_VARS:
+    description: 'Export secrets as environment variables to GITHUB_ENV (true/false)'
+    required: false
+    default: 'false'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
