@@ -61,7 +61,9 @@ If you need the file to have a specific name (e.g., for frameworks using `.env.l
 
 ### 2. Export secrets as environment variables
 
-Useful if you need to use secrets directly in subsequent step commands without reading a file:
+Useful if you need to use secrets directly in subsequent step commands without reading a file.
+
+**Important:** When using exported variables in the `with` block of other actions, you must use the `${{ env.VAR_NAME }}` syntax. Standard shell syntax (`$VAR_NAME`) only works in `run` blocks.
 
 ```yaml
 - uses: AngelloFD/phase-to-env@v1
@@ -72,8 +74,16 @@ Useful if you need to use secrets directly in subsequent step commands without r
     HOST: 'https://console.phase.dev'
     EXPORT_ENV_VARS: 'true'
 
+# Example: Using in a 'run' command (Shell syntax)
 - name: Print Secret (Masked)
   run: echo "My secret is $MY_SECRET_KEY"
+
+# Example: Using in another Action's inputs (GitHub Context syntax)
+- name: Login to Docker Hub
+  uses: docker/login-action@v3
+  with:
+    username: ${{ env.DOCKER_USER }}
+    password: ${{ env.DOCKER_PASS }}
 ```
 
 ### 3. Exclude specific secrets
