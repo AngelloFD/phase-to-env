@@ -85,16 +85,17 @@ async function run() {
     const excludedSecretsList = [];
 
     for (const secret of validSecrets) {
+      // Security: Mask the secret value in logs
+      core.setSecret(secret.value);
+
       if (excludedSecretPatterns.some(regex => regex.test(secret.key))) {
         excludedSecretsList.push(secret.key);
       } else {
-        // Security: Mask the secret value in logs
-        core.setSecret(secret.value);
         includedSecrets.push(secret);
+      }
 
-        if (exportEnvVars) {
-          core.exportVariable(secret.key, secret.value);
-        }
+      if (exportEnvVars) {
+        core.exportVariable(secret.key, secret.value);
       }
     }
 

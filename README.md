@@ -78,7 +78,9 @@ Useful if you need to use secrets directly in subsequent step commands without r
 
 ### 3. Exclude specific secrets
 
-If there are secrets in Phase you don't want to bring into the CI/CD environment:
+If there are secrets in Phase you don't want to include in the generated `.env` file (e.g., to prevent them from being written to disk), you can exclude them using `EXCLUDE_SECRETS`.
+
+**Note:** If `EXPORT_ENV_VARS` is set to `true`, excluded secrets **will still be exported** as environment variables to the workflow. This allows you to use sensitive secrets in your steps without persisting them to the `.env` file.
 
 ```yaml
 - uses: AngelloFD/phase-to-env@v1
@@ -87,6 +89,7 @@ If there are secrets in Phase you don't want to bring into the CI/CD environment
     SERVICE_TOKEN: ${{ secrets.PHASE_SERVICE_TOKEN }}
     ENV_NAME: 'production'
     HOST: 'https://console.phase.dev'
+    EXPORT_ENV_VARS: 'true'
     EXCLUDE_SECRETS: 'DATABASE_URL,ADMIN_PASSWORD'
 ```
 

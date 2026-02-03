@@ -15,7 +15,7 @@ inputs:
     description: 'Phase API base URL'
     required: true
   EXCLUDE_SECRETS:
-    description: 'Comma-separated list of secret names to exclude'
+    description: 'Comma-separated list of secret names to exclude from the .env file (they will still be exported if EXPORT_ENV_VARS is true)'
     required: false
   SECRET_FILE_PATH:
     description: 'Path/Name of the output file (default: .env)'
