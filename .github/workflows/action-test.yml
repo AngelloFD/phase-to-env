@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
   pull_request:
+    branches: [ main ]
 
 jobs:
   test-action:
@@ -26,7 +27,7 @@ jobs:
           ENV_NAME: ${{ matrix.env }}
           SERVICE_TOKEN: ${{ secrets.PHASE_SERVICE_TOKEN }}
           SECRET_FILE_PATH: '.env.${{ matrix.env }}'
-          EXPORT_ENV_VARS: 'true'
+          EXPORT_ENV_VARS: true
           HOST: ${{ secrets.PHASE_URL }}
 
       - name: Verify .env creation
@@ -39,3 +40,55 @@ jobs:
             echo "❌ .env.${{ matrix.env }} file was NOT created"
             exit 1
           fi
+
+      - name: Check if env vars are set for each secret in their respective enviroment
+        run: |
+          if [ ${{ matrix.env }} == 'development' ]; then
+            echo "SATELLITE_HANDOFF_KEY=$SATELLITE_HANDOFF_KEY"
+            echo "FIRMWARE_UPDATE_URL=$FIRMWARE_UPDATE_URL"
+            echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+          elif [ ${{ matrix.env }} == 'production' ]; then
+            echo "WIREGUARD_KEY=$WIREGUARD_KEY"
+            echo "GROUNDSTATION_PRIVATE_KEY_PATH=$GROUNDSTATION_PRIVATE_KEY_PATH"
+            echo "SIGNAL_ENCRYPTION_KEY=$SIGNAL_ENCRYPTION_KEY"
+          elif [ ${{ matrix.env }} == 'staging' ]; then
+            echo "DISABLE_STARLINK_COORDINATES=$DISABLE_STARLINK_COORDINATES"
+            echo "POSTGRES_CONNECTION_STRING=$POSTGRES_CONNECTION_STRING"
+            echo "WIREGUARD_KEY=$WIREGUARD_KEY"
+          fi
+
+  test-exclusion-logic:
+    runs-on: ubuntu-latest
+    name: Test Exclusion Logic
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run Phase Action with Exclusion
+        uses: ./
+        with:
+          APP_ID: ${{ secrets.PHASE_APP_ID }}
+          ENV_NAME: 'development'
+          SERVICE_TOKEN: ${{ secrets.PHASE_SERVICE_TOKEN }}
+          HOST: ${{ secrets.PHASE_URL }}
+          EXPORT_ENV_VARS: 'true'
+          EXCLUDE_SECRETS: 'AWS_ACCESS_KEY_ID'
+
+      - name: Verify Secret is NOT in .env file
+        run: |
+          if grep -q "AWS_ACCESS_KEY_ID" .env; then
+            echo "❌ Failed: AWS_ACCESS_KEY_ID should be excluded from .env file but was found"
+            exit 1
+          else
+            echo "✅ Passed: AWS_ACCESS_KEY_ID was correctly excluded from .env file"
+          fi
+
+      - name: Verify Secret IS exported as Env Var
+        run: |
+          if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+             echo "✅ Passed: AWS_ACCESS_KEY_ID is available as env var"
+          else
+             echo "❌ Failed: AWS_ACCESS_KEY_ID should be exported as env var"
+             exit 1
+          fi
+
