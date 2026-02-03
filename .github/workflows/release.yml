@@ -32,9 +32,13 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add dist/
-          # Only commit if there are changes in dist
-          git diff --quiet && git diff --staged --quiet || git commit -m "build: update dist for ${{ github.ref_name }}"
-          git push origin HEAD:main
+          # Only commit and push if there are changes in dist
+          if ! git diff --quiet || ! git diff --staged --quiet; then
+            git commit -m "build: update dist for ${{ github.ref_name }}"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
 
       - name: Update tags
         run: |
