@@ -6,10 +6,10 @@ try {
 
   if (fs.existsSync(secretFilePath)) {
     fs.unlinkSync(secretFilePath);
-    core.info(`🗑️  Successfully deleted temporary secret file: ${secretFilePath}`);
+    core.info(`Successfully deleted temporary secret file: ${secretFilePath}`);
   } else {
-    core.info(`ℹ️  File ${secretFilePath} does not exist, skipping cleanup.`);
+    core.info(`ℹFile ${secretFilePath} does not exist, skipping cleanup.`);
   }
 } catch (error) {
-  core.warning(`⚠️  Failed to delete secret file: ${error.message}`);
+  core.warning(`Failed to delete secret file: ${error.message}`);
 }
