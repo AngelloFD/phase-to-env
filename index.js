@@ -76,7 +76,6 @@ async function run() {
     } else if (response.data && Array.isArray(response.data.secrets)) {
       secrets = response.data.secrets;
     } else {
-      console.log('Response received:', JSON.stringify(response.data, null, 2));
       throw new Error('Unexpected response format from Phase API');
     }
 
@@ -104,12 +103,10 @@ async function run() {
     const envContent = header + includedSecrets
       .map(s => {
         const cleanValue = s.value.replace(/[\r\n]+/g, '');
-        let finalValue = cleanValue;
-        
-        if (cleanValue.startsWith('"') || cleanValue.startsWith("'")) {
-          finalValue = `"${cleanValue.replace(/"/g, '\\"')}"`;
-        }
-        
+        const needsQuoting = /[\s"'\\#]/.test(cleanValue) || cleanValue.length === 0;
+        const finalValue = needsQuoting
+          ? `"${cleanValue.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+          : cleanValue;
         return `${s.key}=${finalValue}`;
       })
       .join('\n');
@@ -129,7 +126,7 @@ async function run() {
     }
 
   } catch (error) {
-    console.error('Error fetching secrets:', error.response ? error.response.data : error.message);
+    console.error('Error fetching secrets:', error.response ? `HTTP ${error.response.status}` : error.message);
     core.setFailed(error.message);
   }
 }
